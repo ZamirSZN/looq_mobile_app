@@ -1,0 +1,612 @@
+
+#:import ImageRightWidget kivymd.uix.list.ImageRightWidget
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:set black_text_color  0,0,0,1
+#:set white_text_color  1,1,1,1
+#:import change_statusbar_color statusbarcolor.change_statusbar_color
+#:import LoginBox login.LoginBox
+#:import SignupBox signup.SignupBox
+#:import MagicBehavior kivymd.uix.behaviors.MagicBehavior
+#:import SettingsBox settings.SettingsBox
+#:import SearchBox search.SearchBox
+#:import PURPLE colors.PURPLE
+#:import LIGHT_ORANGE colors.LIGHT_ORANGE
+#:import ASH colors.ASH
+#:import WHITE colors.WHITE
+#:import LIGHT_PINK colors.LIGHT_PINK
+#:import PINK colors.PINK
+#:import DARK colors.DARK
+#:import ORANGE colors.ORANGE
+#: import PostNewBox post.PostNewBox
+
+
+
+<ConfirmationLayout>
+	size_hint_y: None
+	orientation:'vertical'
+	height:dp(900)
+	padding:dp(60)
+	canvas.before:
+		Color:
+			rgba:app.confirm_color
+		RoundedRectangle:
+			pos:self.pos
+			size:self.size
+			radius:30,30,0,0	
+	Image:
+		source:app.confirm_image
+		anim_delay : .05
+		pos_hint: {'center_x': .5, 'center_y':.5}
+		size_hint:.8,.8
+
+	MDLabel:
+		halign:'center'
+		text:app.confirm_text
+	
+	SendButton:
+		text:'Ok'
+		icon:'check'
+		pos_hint: {'center_x': .5, 'center_y':.3}
+		on_release:app.confirmbottomsheet.dismiss()
+
+
+
+<BackButton@MDFloatingActionButton>
+	md_bg_color: app.theme_cls.primary_color
+	pos_hint: {'center_x': .5, 'center_y':.07}
+	icon:'close'
+	on_release:
+		app.root.current='looq-home'
+		change_statusbar_color(PURPLE)
+
+
+<SendButton@MagicBehavior+MDFillRoundFlatIconButton>
+
+<ResetLayout@FloatLayout>
+	size_hint_y: None
+	height:dp(200)
+	MDLabel:
+		text:'Reset the app ?'
+		font_name:'Montserrat'
+		halign:'center'
+		pos_hint: { 'center_y': .73}
+	MDFillRoundFlatIconButton:
+		pos_hint: {'center_x': .3, 'center_y': .35}
+		text:'   Yes'
+		on_release:
+			app.reset()
+			app.resetbottomsheet.dismiss()
+		font_name:'Montserrat'
+		icon:'check'
+		md_bg_color:PURPLE
+	MDFillRoundFlatIconButton:
+		pos_hint: {'center_x': .7, 'center_y': .35}
+		text:'   No'
+		on_release:app.resetbottomsheet.dismiss()
+		font_name:'Montserrat'
+		icon:'close'
+		md_bg_color:LIGHT_PINK
+
+<NightModeLayout@FloatLayout>
+	size_hint_y: None
+	height:dp(200)
+	MDFillRoundFlatIconButton:
+		pos_hint: {'center_x': .3, 'center_y': .5}
+		text:'Light'
+		on_release:app.light_mode()
+		font_name:'Montserrat'
+		icon:'weather-sunset'
+		md_bg_color: WHITE
+	MDFillRoundFlatIconButton:
+		pos_hint: {'center_x': .7, 'center_y': .5}
+		text:'Dark'
+		on_release:app.dark_mode()
+		font_name:'Montserrat'
+		icon:'weather-night'
+		md_bg_color: DARK
+
+
+<LooqHomeRv@RecycleView>
+    viewclass: 'LooqWidget'
+    RecycleBoxLayout:
+        orientation: 'vertical'
+        size_hint: 1, None
+        height: self.minimum_height
+        default_size_hint: 1, None
+        default_size: 0, dp(110)
+		spacing:dp(15)
+
+<LooqCategoryRv@LooqHomeRv>
+
+
+<LooqDetail>
+	object_name:""
+	posted_on:''
+	description:''
+	author:''
+	image:''
+	orientation:'vertical'
+	canvas.before:
+		Color:
+			rgba:PURPLE
+		RoundedRectangle:
+			pos:self.pos
+			size:self.size
+			radius:[10]*4
+	rows:3
+
+	MDLabel:
+		text:root.object_name
+		font_size:dp(26)
+		padding_x:30.0
+		font_name:'Montserrat'
+
+	
+	MDLabel:
+		text:root.description
+		font_size:dp(13)
+		padding_x:30.0
+		padding_y:30.0
+		font_name:'Montserrat'
+
+	MDLabel:
+		text:root.posted_on
+		font_size:dp(10)
+		font_style:'Caption'
+		padding_x:30.0
+		padding_y:30.0
+		font_name:'Ubuntu'
+
+<MDFillRoundFlatIconButton>
+	text_color: black_text_color
+
+<LooqLatestWidget@ButtonBehavior+GridLayout>
+	object_name:""
+	posted_on:''
+	description:''
+	category:''
+	author:''
+	image:''
+	on_release:
+		app.goto_screen('looq-detail', "left")
+		change_statusbar_color(PINK)
+		app.detail_parameters(self.object_name, self.posted_on, self.category, self.description, self.author, self.image )
+	
+	canvas.before:
+		Color:
+			rgba:PURPLE
+		RoundedRectangle:
+			pos:self.pos
+			size:self.size
+			radius:[21]*4
+	cols:3
+	padding:dp(20)
+	spacing:dp(10)
+	BoxLayout:
+		size_hint_x:.01
+		size_y:.9
+		canvas:
+			Color:
+				rgba:ORANGE
+			Rectangle:
+				pos:self.pos
+				size:self.size
+	BoxLayout:
+		orientation:'vertical'
+		MDLabel:
+			text:root.posted_on
+			font_size:dp(11)
+			theme_text_color:'Primary'
+			opposite_colors:True
+			font_name:'Montserrat'
+		MDLabel:
+			text:root.object_name
+			text_color:1,0,1,1
+			theme_text_color:'Primary'
+			opposite_colors:True
+			
+
+	IconLeftWidget:
+		icon: 'chevron-down'
+		theme_text_color:'Primary'
+		opposite_colors:True
+		on_release:
+			app.goto_screen('looq-detail', "left")
+			change_statusbar_color(PINK)
+			app.detail_parameters(root.object_name, root.posted_on, root.category, root.description, root.author, root.image )
+		
+<LooqWidget>
+	object_name:""
+	posted_on:''
+	description:''
+	category:''
+	author:''
+	image:''
+	on_release:
+		app.goto_screen('looq-detail', "left")
+		change_statusbar_color(PINK)
+		app.detail_parameters(self.object_name, self.posted_on, self.category, self.description, self.author, self.image )
+	canvas.before:
+		Color:
+			rgba:WHITE
+		RoundedRectangle:
+			pos:self.pos
+			size:self.size
+			radius:[21]*4
+	rows:3
+	padding:dp(20)
+	spacing:dp(10)
+	MDLabel:
+		text:root.object_name
+		font_name:'Montserrat'
+		opposite_colors:False
+	BoxLayout:
+		MDLabel:
+			text:root.posted_on
+			font_size:dp(11)
+			theme_text_color:'Custom'
+			text_color:0,0,0,.5
+			font_name:'Montserrat'
+			opposite_colors:False
+
+		ImageLoader:
+			canvas:
+				Color:
+					rgb: (1,1,1)
+				Ellipse:
+					texture:self.texture
+					size:self.width + 20,self.height+20
+					pos:self.x - 10,self.y - 10
+					#radius:[15]*4	
+			source:root.image
+			size_hint: .1,1
+			
+
+<CategoryButton@MDFillRoundFlatIconButton>
+	font_name:'Montserrat'
+	on_release:
+		app.root.ids.looq_category_rv.data=[]
+		app.goto_screen('looq-category', 'down')
+		app.get_category(self.text)
+		change_statusbar_color(self.md_bg_color)
+	
+<CategoryButtonPost@MDFillRoundFlatIconButton>
+	font_name:'Montserrat'
+
+
+
+ScreenManager:
+	id:sm
+	Screen:
+		name:'looq-home'
+		GridLayout:
+			cols:1
+			BoxLayout:
+				orientation:'vertical'
+				size_hint_y:.1
+				MDToolbar:
+					id:toolbar
+					title:app.greeting
+					md_bg_color: 1,1,1,0
+					elevation:0
+					opposite_colors:False
+					specific_text_color: black_text_color
+					right_action_items: [['magnify', lambda x: app.goto_screen('looq-search', 'down')],["account-circle", lambda x: app.check_logged_in_acccount()]]
+
+			ScrollView:
+				do_scroll_y: False
+				size_hint_y: .1
+				bar_width:0
+				BoxLayout:
+					orientation: "vertical"
+					size_hint_x: None
+					width: self.minimum_width
+					GridLayout:
+						rows: 1
+						size_hint_y: .4
+						size_hint_x: None
+						width: self.minimum_width
+						spacing:dp(10)
+						padding:dp(10)		
+						CategoryButton:
+							icon: 'alpha-g-circle'
+							text: 'General'
+							md_bg_color: ASH
+						CategoryButton:
+							icon: 'dog-side'
+							text: 'Pets'
+							md_bg_color: PINK
+						CategoryButton:
+							icon: 'food'
+							text: 'Food'
+							md_bg_color: LIGHT_PINK
+						CategoryButton:
+							icon: 'human'
+							text: 'Personal'
+							md_bg_color: DARK
+						CategoryButton:
+							icon: 'monitor-cellphone'
+							text: 'Gadgets'
+							md_bg_color: ASH
+							
+
+						CategoryButton:
+							icon: 'bookshelf'
+							text: 'Stationary'
+							md_bg_color: PURPLE
+
+
+						CategoryButton:
+							icon: 'tree'
+							text: 'Others'
+							md_bg_color: LIGHT_ORANGE
+
+				
+			BoxLayout:
+				orientation:'vertical'
+				padding:dp(15)
+				spacing:dp(20)
+				size_hint_y:.2
+				MDLabel:
+					text:'Random'
+					font_name:'Montserrat'
+					opposite_colors:True
+				LooqLatestWidget:
+					id:looq_latest_widget
+					size_hint_y:root.height
+			
+			
+			BoxLayout:
+				orientation:'vertical'
+				padding:dp(15)
+
+				size_hint_y:.5
+				MDLabel:
+					text:'All'
+					size_hint_y:.1
+					font_size:dp(13)
+					font_name:'Montserrat'
+				
+				LooqHomeRv:
+					id:looq_home_rv
+					size_hint_y:.9
+				
+				
+				
+			
+
+			BoxLayout:
+				size_hint_y:.08
+				padding:dp(15)
+				AnchorLayout:
+					anchor_x:'left'
+					MDIconButton:
+						icon:'refresh'
+						pos_hint: {'center_x': .1, 'center_y': .5}
+						user_font_size: dp(20)
+						on_release:app.get_looq_objects_all()
+
+				MDFillRoundFlatIconButton:
+					icon:'plus-circle'
+					text:'Post New'
+					pos_hint: {'center_x': .5, 'center_y': .5}
+					md_bg_color: PURPLE
+					font_name:'Montserrat'
+					on_release:
+						app.check_logged_in('looq-post','up')
+						
+
+						
+
+				AnchorLayout:
+					anchor_x:'right'
+					MDIconButton:
+						icon:'settings'
+						pos_hint: {'center_x': .9, 'center_y': .5}
+						user_font_size: dp(20)
+						on_release:
+							app.root.current='looq-settings'
+							app.root.transition.direction='right'
+							change_statusbar_color(LIGHT_ORANGE)
+		FloatLayout:
+			size_hint_y:.5
+			MDSpinner:
+				size_hint:.08, 0.8
+				pos_hint: {'center_x': .5, 'center_y': .9}
+				active: True
+				id:looq_home_rv_spinner
+			
+	Screen:
+		name:'looq-detail'
+		BoxLayout:
+			size_hint_y:1
+			orientation:'vertical'
+			spacing:dp(30)
+			padding:dp(20)
+			
+			ImageLoader:
+				canvas:
+					Color:
+						rgb: (1,1,1)
+					RoundedRectangle:
+						texture:self.texture
+						size:self.width + 15,self.height+10
+						pos:self.x - 10,self.y - 10
+						radius:[15]*4
+				
+				id:detail_image
+				size_hint:.9,.4
+				pos_hint: {'center_x': .5}
+
+			BoxLayout:
+				orientation:'vertical'
+				size_hint_y:.3
+				
+				padding:dp(5)
+				LooqDetail:
+					id:looq_detail_widget
+					size_hint_y:1
+			Widget:
+				size_hint_y:.1
+		
+				
+		BackButton:
+			on_release:
+				app.root.transition.direction='right'
+		
+
+			
+
+	Screen:
+		name:'looq-post'
+		PostNewBox:
+		BackButton:
+			on_release:
+				app.root.transition.direction='down'
+		
+	Screen:
+		name:'looq-settings'
+		SettingsBox:
+		BackButton:
+			on_release:
+				app.root.transition.direction='left'
+		
+	Screen:
+		name:'looq-search'
+		SearchBox:
+		BackButton:
+			on_release:
+				app.root.transition.direction='up'
+				
+
+	
+	Screen:
+		name:'looq-category'
+		BoxLayout:
+			orientation:'vertical'
+			padding:dp(20)
+			MDLabel:
+				text:''
+				size_hint_y:.2
+				font_style:'H4'
+				font_name:'Montserrat'
+				opposite_colors:False
+				id:category_label
+				theme_text_color:'Primary'
+				halign:'left'
+			
+		
+			LooqCategoryRv:
+				id:looq_category_rv
+		FloatLayout:
+			size_hint_y:1
+			MDSpinner:
+				size_hint:.08, 0.8
+				pos_hint: {'center_x': .5, 'center_y': .7}
+				active: True
+				id:looq_category_spinner
+		BackButton:
+			on_release:
+				app.root.transition.direction='up'
+
+	Screen:
+		name:'looq-account'
+		BoxLayout:
+			orientation:'vertical'
+			spacing:dp(10)
+			padding:dp(20)
+			BoxLayout:
+				size_hint_y:.5
+				
+				ImageLoader:
+					size_hint:.1,.05
+					canvas:
+						Color:
+							rgb: (1,1,1)
+						Ellipse:
+							texture:self.texture
+							size:self.width+10 ,self.height+300
+							pos:self.x,self.y - 150
+					id:user_image
+					
+					pos_hint: {'center_x': .5, 'center_y':.5}
+
+				
+
+			Widget:
+				size_hint_y:.03
+
+			OneLineAvatarListItem:
+				id:username_label
+				IconLeftWidget:
+					icon: "account-circle"
+			
+			OneLineAvatarListItem:
+				id:email_label
+				IconLeftWidget:
+					icon: "email"
+			Widget:
+				size_hint_y:.2
+			BackButton:
+				on_release:
+					app.goto_screen('looq-home','right')
+
+
+
+	Screen:
+		name:'looq-login'
+		LoginBox:	
+		BackButton:
+			on_release:
+				app.goto_screen('looq-home','right')
+
+		
+
+	Screen:
+		name:'looq-signup'
+		SignupBox:
+		BackButton:
+			on_release:
+				app.goto_screen('looq-home','left')
+
+
+
+
+
+				
+							
+					
+						
+					
+					
+		
+
+
+							
+				
+				
+				
+			
+					
+
+
+			
+			
+						
+						
+					
+				
+					
+				
+
+					
+				
+
+		
+		
+		
+
+		
+
+
+
